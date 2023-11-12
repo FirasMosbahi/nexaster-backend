@@ -19,9 +19,6 @@ import { MediaModule } from './media/media.module';
       isGlobal: true,
       validationSchema: Joi.object({
         DB_HOST: Joi.string().required(),
-        DB_USER_NAME: Joi.string().required(),
-        DB_PASSWORD: Joi.string().required(),
-        DB_CLUSTER: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),
         BCRYPT_ROUNDS: Joi.number().required(),
@@ -46,7 +43,7 @@ import { MediaModule } from './media/media.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        uri: 'mongodb://localhost:27017/nexaster',
+        uri: configService.get('DB_HOST'),
       }),
     }),
     CommonModule,
