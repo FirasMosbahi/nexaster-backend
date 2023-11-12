@@ -53,7 +53,6 @@ import { MediaModule } from './media/media.module';
     DoctorModule,
     MedicalStatusModule,
     VisitModule,
-    MediaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
