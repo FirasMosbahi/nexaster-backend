@@ -18,6 +18,7 @@ import { MediaModule } from './media/media.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
+        PORT: Joi.number().required(),
         DB_HOST: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),
