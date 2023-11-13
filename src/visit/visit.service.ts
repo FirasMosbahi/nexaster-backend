@@ -47,9 +47,11 @@ export class VisitService extends CommonRepository<Visit> {
     doctorId: Types.ObjectId,
     getDoctorAvailabilityDto: GetDoctorAvailabilityDto,
   ): Promise<DayVisitsEnum[]> {
+    const date = getDoctorAvailabilityDto.date;
+    date.setHours(0, 0, 0, 0);
     const visits: Visit[] = await this.find({
       doctor: doctorId,
-      date: getDoctorAvailabilityDto.date,
+      date,
     });
     const doctorAvailability = [
       DayVisitsEnum.VISIT1,
@@ -60,20 +62,25 @@ export class VisitService extends CommonRepository<Visit> {
     for (const visit of visits) {
       doctorAvailability.filter((e) => e !== visit.visitNumber);
     }
+    console.log(doctorAvailability);
     return doctorAvailability;
   }
   async askForVisit(
     patientId: Types.ObjectId,
     visitDto: VisitDto,
   ): Promise<Visit> {
+    const date = visitDto.date;
+    date.setHours(0, 0, 0, 0);
     const doctorAvailability: DayVisitsEnum[] =
-      await this.getDoctorAvailability(visitDto.doctorId, {
-        date: visitDto.date,
+      await this.getDoctorAvailability(visitDto.doctor, {
+        date,
       });
-    if (doctorAvailability.find((e) => e === visitDto.visitNumber)) {
+    if (
+      doctorAvailability.filter((e) => e !== visitDto.visitNumber).length !== 0
+    ) {
       return await this.create({
+        date,
         ...visitDto,
-        patient: patientId,
       });
     } else {
       throw new BadRequestException('THE_DOCTOR_IS_NOT_AVAILABLE');
@@ -134,6 +141,8 @@ export class VisitService extends CommonRepository<Visit> {
     return await this.find({ patient });
   }
   async getMyVisitsAsDoctor(doctor: Types.ObjectId): Promise<Visit[]> {
-    return await this.find({ doctor });
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    return await this.find({ doctor, date, status: VisitStatusEnum.ACCEPTED });
   }
 }

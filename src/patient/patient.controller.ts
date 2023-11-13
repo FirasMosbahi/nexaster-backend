@@ -66,4 +66,12 @@ export class PatientController {
     await this.patientService.updateMedicalFolder(user, medicalFolderDto);
     return { message: 'MEDICAL_FOLDER_UPDATED_SUCCESSFULLY' };
   }
+  @Get('/:patientId')
+  async getPatient(@Param('patientId') patient: Types.ObjectId) {
+    const data = await this.patientService.findById(patient);
+    return {
+      message: 'PATIENT FETCHED SUCCESSFULLY',
+      data,
+    };
+  }
 }

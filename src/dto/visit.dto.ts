@@ -4,7 +4,7 @@ import { DayVisitsEnum } from '../enums/visits.enum';
 
 export class VisitDto {
   @IsMongoId()
-  doctorId: Types.ObjectId;
+  doctor: Types.ObjectId;
   @IsDate()
   date: Date;
   @IsEnum(DayVisitsEnum)
