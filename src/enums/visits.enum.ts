@@ -3,8 +3,6 @@ export enum DayVisitsEnum {
   VISIT2,
   VISIT3,
   VISIT4,
-  VISIT5,
-  VISIT6,
 }
 export enum WeekDaysEnum {
   MONDAY = 1,

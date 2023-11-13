@@ -18,8 +18,12 @@ export class AuthController {
 
   @Post('/signup/doctor')
   async signup(@Body() signUpDoctorDto: SignUpDoctorDto) {
-    await this.authService.signupDocotr(signUpDoctorDto);
-    return { message: 'DOCTOR SIGNED UP SUCCESSFULLY' };
+    try {
+      await this.authService.signupDocotr(signUpDoctorDto);
+      return { message: 'DOCTOR SIGNED UP SUCCESSFULLY' };
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @Post('/signup/patient')

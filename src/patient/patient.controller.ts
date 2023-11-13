@@ -37,11 +37,9 @@ export class PatientController {
     return new UpdatePatientResponse(data);
   }
 
-  @Patch('assign/:doctorId')
-  @Roles(RolesEnum.PATIENT)
-  @UseGuards(JwtGuard)
+  @Patch('assign/:doctorId/:userId')
   async assignToDoctor(
-    @Req() { user }: { user: Types.ObjectId },
+    @Param('userId') user: Types.ObjectId,
     @Param('doctorId') doctorId: Types.ObjectId,
   ) {
     await this.patientService.assignToDoctor(user, doctorId);

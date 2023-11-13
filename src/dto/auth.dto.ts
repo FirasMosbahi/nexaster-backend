@@ -6,12 +6,8 @@ import {
   IsPhoneNumber,
   IsString,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
 import { GenderEnum } from '../enums/gender.enum';
-import { Type } from 'class-transformer';
-import { Availability } from '../types/availability';
-import { AvailabilityDto } from './availability.dto';
 
 export class LoginDto {
   @IsEmail()
@@ -27,15 +23,12 @@ class SignUpDto extends LoginDto {
   @IsOptional()
   @IsString()
   lastName: string;
-  @IsPhoneNumber()
+  @IsString()
   phoneNumber: string;
 }
 export class SignUpDoctorDto extends SignUpDto {
   @IsString()
   speciality: string;
-  @ValidateNested()
-  @Type(() => AvailabilityDto)
-  availability: Availability;
 }
 
 export class MedicalFolderDto {

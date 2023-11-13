@@ -47,19 +47,20 @@ export class VisitService extends CommonRepository<Visit> {
     doctorId: Types.ObjectId,
     getDoctorAvailabilityDto: GetDoctorAvailabilityDto,
   ): Promise<DayVisitsEnum[]> {
-    const doctor: Doctor = await this.doctorService.findById(doctorId);
     const visits: Visit[] = await this.find({
       doctor: doctorId,
       date: getDoctorAvailabilityDto.date,
     });
-    const weekDay: WeekDaysEnum = SpecialDate.fromDate(
-      getDoctorAvailabilityDto.date,
-    ).weekDay;
-    if (!doctor.availability.has(weekDay)) return [];
-    const doctorAvailability = Array.from(doctor.availability.get(weekDay));
+    const doctorAvailability = [
+      DayVisitsEnum.VISIT1,
+      DayVisitsEnum.VISIT2,
+      DayVisitsEnum.VISIT3,
+      DayVisitsEnum.VISIT4,
+    ];
     for (const visit of visits) {
       doctorAvailability.filter((e) => e !== visit.visitNumber);
     }
+    return doctorAvailability;
   }
   async askForVisit(
     patientId: Types.ObjectId,

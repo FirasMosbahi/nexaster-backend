@@ -25,11 +25,10 @@ export class Patient extends BaseUserSchema {
 
   @Prop({
     type: [SchemaTypes.String],
-    enum: DiseasesEnum,
     required: true,
     default: [],
   })
-  diseases?: DiseasesEnum[];
+  diseases: string[];
 
   @Prop({
     type: MedicalFolder,
@@ -46,6 +45,18 @@ export class Patient extends BaseUserSchema {
     },
   })
   medicalStats: MedicalStatus;
+  @Prop({
+    type: [String],
+    required: true,
+    default: [],
+  })
+  observations: string[];
+  @Prop({
+    type: [String],
+    required: true,
+    default: [],
+  })
+  prespection: string[];
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);
