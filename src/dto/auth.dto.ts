@@ -9,7 +9,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { GenderEnum } from '../enums/gender.enum';
-import { MedicalFolder, Weight } from '../types/medical.folder';
 import { Type } from 'class-transformer';
 import { Availability } from '../types/availability';
 import { AvailabilityDto } from './availability.dto';
@@ -38,16 +37,7 @@ export class SignUpDoctorDto extends SignUpDto {
   @Type(() => AvailabilityDto)
   availability: Availability;
 }
-class WeightDto {
-  @IsNumber()
-  actualWeight: number;
-  @IsOptional()
-  @IsNumber()
-  bodyFat?: number;
-  @IsOptional()
-  @IsNumber()
-  waterPercentage?: number;
-}
+
 export class MedicalFolderDto {
   @IsOptional()
   @IsString()
@@ -61,12 +51,6 @@ export class SignUpPatientDto extends SignUpDto {
   gender: GenderEnum;
   @IsNumber()
   age: number;
-  @ValidateNested()
-  @Type(() => WeightDto)
-  weight: Weight;
   @IsNumber()
   height: number;
-  @ValidateNested()
-  @Type(() => MedicalFolderDto)
-  medicalFolder: MedicalFolder;
 }

@@ -45,3 +45,11 @@ export class AcceptReportedVisitResponse {
     this.data = data;
   }
 }
+
+export class GetMyVisitsResponse {
+  message = 'VISITS_FETCHED_SUCCESSFULLY';
+  data: Visit[];
+  constructor(data: Visit[]) {
+    this.data = data;
+  }
+}

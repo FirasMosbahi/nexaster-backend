@@ -15,6 +15,7 @@ import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
+    MediaModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -23,9 +24,7 @@ import { MediaModule } from './media/media.module';
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),
         BCRYPT_ROUNDS: Joi.number().required(),
-        S3_ACCESS_KEY_ID: Joi.string().required(),
-        S3_SECRET_ACCESS_KEY: Joi.string().required(),
-        S3_BUCKET_NAME: Joi.string().required(),
+        STORAGE_CONNECTION_STRING: Joi.string().required(),
       }),
       envFilePath: '.env',
     }),

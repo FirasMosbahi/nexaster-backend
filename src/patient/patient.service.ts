@@ -18,6 +18,24 @@ export class PatientService extends CommonRepository<Patient> {
     super(patientModel);
   }
 
+  async getPatient(patientId: Types.ObjectId): Promise<any> {
+    const patient = await this.findById(patientId);
+    return {
+      ...patient,
+      status: {
+        heartRate: patient.medicalStats.heartRate.at(
+          patient.medicalStats.heartRate.length - 1,
+        ),
+        stress: patient.medicalStats.stress.at(
+          patient.medicalStats.stress.length - 1,
+        ),
+        sleep: patient.medicalStats.sleep.at(
+          patient.medicalStats.sleep.length - 1,
+        ),
+      },
+    };
+  }
+
   async createPatient(
     signUpPatientDto: SignUpPatientDto,
   ): Promise<Types.ObjectId> {

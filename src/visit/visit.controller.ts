@@ -17,6 +17,7 @@ import {
   AcceptVisitResponse,
   AskForVisitResponse,
   GetDoctorAvailabilityResponse,
+  GetMyVisitsResponse,
   GetVisitsByDoctorResponse,
   ReportVisitResponse,
 } from '../types/visits.response';
@@ -96,5 +97,23 @@ export class VisitController {
   ): Promise<AcceptReportedVisitResponse> {
     const data = await this.visitService.acceptReportedVisit(user, visitId);
     return new AcceptReportedVisitResponse(data);
+  }
+  @Get('/myVisits/patient')
+  @Roles(RolesEnum.PATIENT)
+  @UseGuards(JwtGuard)
+  async getMyVisitsAsPatient(
+    @Req() { user }: { user: Types.ObjectId },
+  ): Promise<GetMyVisitsResponse> {
+    const data = await this.visitService.getMyVisitsAsPatient(user);
+    return new GetMyVisitsResponse(data);
+  }
+  @Get('/myVisits/doctor')
+  @Roles(RolesEnum.DOCTOR)
+  @UseGuards(JwtGuard)
+  async getMyVisitsAsDoctor(
+    @Req() { user }: { user: Types.ObjectId },
+  ): Promise<GetMyVisitsResponse> {
+    const data = await this.visitService.getMyVisitsAsDoctor(user);
+    return new GetMyVisitsResponse(data);
   }
 }

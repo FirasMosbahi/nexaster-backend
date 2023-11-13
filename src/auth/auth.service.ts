@@ -15,6 +15,8 @@ import { Auth } from '../schema/auth.schema';
 import { RolesEnum } from '../enums/roles.enum';
 import { DoctorService } from '../doctor/doctor.service';
 import { PatientService } from '../patient/patient.service';
+import { Patient } from '../schema/patient.schema';
+import { Doctor } from '../schema/doctor.schema';
 
 @Injectable()
 export class AuthService extends CommonRepository<Auth> {
@@ -48,7 +50,10 @@ export class AuthService extends CommonRepository<Auth> {
     );
   }
 
-  async login(loginDto: LoginDto, role: RolesEnum): Promise<string> {
+  async login(
+    loginDto: LoginDto,
+    role: RolesEnum,
+  ): Promise<{ token: string; user: any }> {
     const auth: Auth = await this.findOne({ email: loginDto.email, role });
     if (!auth) {
       throw new NotFoundException(`No ${role.toLowerCase()} with this email`);
@@ -58,7 +63,15 @@ export class AuthService extends CommonRepository<Auth> {
       auth.password,
     );
     if (isValid) {
-      return this.generateAccessToken(auth.userId, role);
+      const token = this.generateAccessToken(auth.userId, role);
+      const user =
+        role === RolesEnum.PATIENT
+          ? await this.patientService.getPatient(auth.userId)
+          : await this.doctorService.findById(auth.userId);
+      return {
+        token,
+        user,
+      };
     } else {
       throw new BadRequestException('Invalid credentials');
     }

@@ -12,7 +12,7 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Param('role') role: RolesEnum,
   ): Promise<LoginResponse> {
-    const data: string = await this.authService.login(loginDto, role);
+    const data: any = await this.authService.login(loginDto, role);
     return new LoginResponse(data);
   }
 

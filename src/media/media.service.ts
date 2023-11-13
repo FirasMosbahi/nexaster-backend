@@ -1,43 +1,56 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as aws from 'aws-sdk';
-import { MediaTypeEnum } from '../enums/media.enum';
+import { BlobServiceClient } from '@azure/storage-blob';
 
 @Injectable()
 export class MediaService {
-  private s3: aws.S3;
-
+  private blobServiceClient;
   constructor(private readonly configService: ConfigService) {
-    this.s3 = new aws.S3({
-      credentials: {
-        accessKeyId: this.configService.get('S3_ACCESS_KEY_ID'),
-        secretAccessKey: this.configService.get('S3_SECRET_ACCESS_KEY'),
-      },
-      endpoint: 'http://192.168.0.1:9000',
-    });
+    this.blobServiceClient = BlobServiceClient.fromConnectionString(
+      this.configService.get('STORAGE_CONNECTION_STRING'),
+    );
   }
 
-  generateBucketFileKey(mediaType: MediaTypeEnum): string {
-    const randomPart = Math.floor(Math.random() * 9000) + 1000;
-    return `${mediaType}/${Date.now()}${randomPart}`;
+  generateBucketFileKey(): string {
+    return `${Date.now()}`;
   }
 
-  async uploadFileToS3(file: any, mediaType: MediaTypeEnum): Promise<string> {
-    const params: aws.S3.PutObjectRequest = {
-      Bucket: this.configService.get('S3_BUCKET_NAME'),
-      Key: this.generateBucketFileKey(mediaType),
-      Body: file.buffer,
-      ACL: 'public-read',
-    };
-    console.log(params);
-    try {
-      const response: aws.S3.ManagedUpload.SendData = await this.s3
-        .upload(params)
-        .promise();
-      return response.Location;
-    } catch (e) {
-      console.log(e);
-      throw new InternalServerErrorException('FILE_UPLOAD_FAILED');
+  async uploadFile(file: any, containerName: string): Promise<any> {
+    console.log(file.originalname);
+    const stream = file.buffer;
+    console.log(file);
+    const containerClient =
+      this.blobServiceClient.getContainerClient(containerName);
+    await containerClient.createIfNotExists();
+    const blobClient = containerClient.getBlockBlobClient(
+      this.generateBucketFileKey(),
+    );
+    const data = await blobClient.upload(stream, stream.length);
+    return data;
+  }
+
+  async getFile(
+    blobName: string,
+    containerName: string,
+  ): Promise<Buffer | undefined> {
+    console.log('start');
+    const containerClient =
+      this.blobServiceClient.getContainerClient(containerName);
+
+    const containerExists = await containerClient.exists();
+    if (!containerExists) {
+      console.log('no container');
+      return undefined;
     }
+
+    const blobClient = containerClient.getBlobClient(blobName);
+
+    const blobExists = await blobClient.exists();
+    if (!blobExists) {
+      console.log('no blob');
+      return undefined;
+    }
+
+    return await blobClient.downloadToBuffer();
   }
 }

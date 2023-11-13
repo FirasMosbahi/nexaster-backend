@@ -12,8 +12,8 @@ export class Patient extends BaseUserSchema {
   gender: GenderEnum;
   @Prop({ type: SchemaTypes.Number, required: true })
   age: number;
-  @Prop({ type: Weight, required: true })
-  weight: Weight;
+  @Prop({ type: Weight, required: false })
+  weight?: Weight;
   @Prop({ type: SchemaTypes.Number, required: true })
   height: number;
   @Prop({
@@ -33,9 +33,9 @@ export class Patient extends BaseUserSchema {
 
   @Prop({
     type: MedicalFolder,
-    required: true,
+    required: false,
   })
-  medicalFolder: MedicalFolder;
+  medicalFolder?: MedicalFolder;
   @Prop({
     type: MedicalStatus,
     required: true,

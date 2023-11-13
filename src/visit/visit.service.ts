@@ -129,4 +129,10 @@ export class VisitService extends CommonRepository<Visit> {
       { new: true },
     );
   }
+  async getMyVisitsAsPatient(patient: Types.ObjectId): Promise<Visit[]> {
+    return await this.find({ patient });
+  }
+  async getMyVisitsAsDoctor(doctor: Types.ObjectId): Promise<Visit[]> {
+    return await this.find({ doctor });
+  }
 }

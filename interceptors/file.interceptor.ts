@@ -3,7 +3,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 export const FileInterceptor = FilesInterceptor('file', 1, {
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: 1024 * 1024 * 15,
   },
   fileFilter: (req, file, callback) => {
     if (file.originalname.split('.')[0] === 'pdf') {
